@@ -82,10 +82,15 @@ export class MemStorage implements IStorage {
   async createScan(scan: InsertScan & { results: any }): Promise<Scan> {
     const id = this.scanId++;
     const newScan: Scan = {
-      ...scan,
       id,
+      url: scan.url,
       scanDate: new Date(),
-      status: "completed"
+      vulnerabilityScan: scan.vulnerabilityScan || null,
+      apiSecurity: scan.apiSecurity || null,
+      encryptionCheck: scan.encryptionCheck || null,
+      fullPortScan: scan.fullPortScan || null,
+      status: "completed",
+      results: scan.results
     };
     this.scans.set(id, newScan);
     return newScan;
@@ -109,9 +114,19 @@ export class MemStorage implements IStorage {
   async createSecurityMetrics(metrics: InsertSecurityMetrics): Promise<SecurityMetrics> {
     const id = this.metricsId++;
     const newMetrics: SecurityMetrics = {
-      ...metrics,
       id,
-      timestamp: new Date()
+      url: metrics.url,
+      timestamp: new Date(),
+      criticalCount: metrics.criticalCount || null,
+      highCount: metrics.highCount || null,
+      mediumCount: metrics.mediumCount || null,
+      lowCount: metrics.lowCount || null,
+      overallRisk: metrics.overallRisk,
+      sslGrade: metrics.sslGrade || null,
+      tlsVersion: metrics.tlsVersion || null,
+      cipherStrength: metrics.cipherStrength || null,
+      hstsEnabled: metrics.hstsEnabled || null,
+      certValidDays: metrics.certValidDays || null
     };
     this.securityMetrics.set(id, newMetrics);
     return newMetrics;
@@ -130,9 +145,12 @@ export class MemStorage implements IStorage {
   async createTrafficData(data: InsertTrafficData): Promise<TrafficData> {
     const id = this.trafficId++;
     const newTrafficData: TrafficData = {
-      ...data,
       id,
-      timestamp: new Date()
+      timestamp: new Date(),
+      requestType: data.requestType,
+      country: data.country,
+      bandwidth: data.bandwidth,
+      isBlocked: data.isBlocked || null
     };
     this.trafficData.set(id, newTrafficData);
     return newTrafficData;
@@ -147,8 +165,13 @@ export class MemStorage implements IStorage {
   async createVulnerability(vulnerability: InsertVulnerability): Promise<Vulnerability> {
     const id = this.vulnerabilityId++;
     const newVulnerability: Vulnerability = {
-      ...vulnerability,
-      id
+      id,
+      type: vulnerability.type,
+      scanId: vulnerability.scanId,
+      severity: vulnerability.severity,
+      description: vulnerability.description,
+      location: vulnerability.location || null,
+      remediation: vulnerability.remediation || null
     };
     this.vulnerabilities.set(id, newVulnerability);
     return newVulnerability;
