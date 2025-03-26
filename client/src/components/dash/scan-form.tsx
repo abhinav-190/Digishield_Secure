@@ -51,16 +51,43 @@ const ScanForm: React.FC = () => {
   });
   
   const handleScan = () => {
-    if (!validateUrl(scanData.url)) {
+    // Make sure URL is not empty
+    if (!scanData.url.trim()) {
       toast({
-        title: "Invalid URL",
-        description: "Please enter a valid URL starting with http:// or https://",
+        title: "Empty URL",
+        description: "Please enter a website URL to scan.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Add protocol if missing
+    let urlToCheck = scanData.url;
+    if (!/^https?:\/\//i.test(urlToCheck)) {
+      urlToCheck = 'https://' + urlToCheck;
+      setScanData({ ...scanData, url: urlToCheck });
+    }
+    
+    // Validate URL format and allowlist
+    if (!validateUrl(urlToCheck)) {
+      toast({
+        title: "Invalid or Unsupported URL",
+        description: "For this demo, please use one of our supported test domains like 'vulnerable-webapp.example.com' or any domain with common TLDs (.com, .org, etc)",
         variant: "destructive",
       });
       return;
     }
     
-    mutation.mutate(scanData);
+    // If we get here, the URL is valid for scanning
+    toast({
+      title: "Scan Started",
+      description: `Starting security scan for ${urlToCheck}. Results will appear momentarily.`,
+    });
+    
+    mutation.mutate({
+      ...scanData,
+      url: urlToCheck
+    });
   };
   
   return (

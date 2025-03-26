@@ -4,6 +4,11 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/dashboard";
+import ScanPage from "@/pages/scan";
+import DdosProtectionPage from "@/pages/ddos-protection";
+import NetworkAnalysisPage from "@/pages/network";
+import ScanHistoryPage from "@/pages/history";
+import ReportsPage from "@/pages/reports";
 import { useEffect } from "react";
 
 // Add keyframes for data point animation
@@ -38,6 +43,11 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/scan" component={ScanPage} />
+      <Route path="/ddos-protection" component={DdosProtectionPage} />
+      <Route path="/network" component={NetworkAnalysisPage} />
+      <Route path="/history" component={ScanHistoryPage} />
+      <Route path="/reports" component={ReportsPage} />
       <Route component={NotFound} />
     </Switch>
   );

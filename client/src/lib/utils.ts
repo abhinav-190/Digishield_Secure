@@ -40,9 +40,39 @@ export function timeAgo(date: Date) {
 }
 
 export function validateUrl(url: string) {
+  // Common domain patterns that should be recognized as valid
+  const knownDomains = [
+    'example.com',
+    'vulnerable-webapp.example.com',
+    'demo-app.com',
+    'test-site.org',
+    'hackathon-demo.net',
+    'digishield-demo.com'
+  ];
+  
+  // Attempt to parse the URL
   try {
     const parsedUrl = new URL(url);
-    return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
+    
+    // Verify the protocol is HTTP or HTTPS
+    if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+      return false;
+    }
+    
+    // Check for invalid or suspicious TLDs
+    const tld = parsedUrl.hostname.split('.').pop();
+    if (!tld || tld.length < 2) {
+      return false;
+    }
+    
+    // Check for common demo domains
+    const hostname = parsedUrl.hostname;
+    const isKnownDomain = knownDomains.some(domain => hostname.includes(domain));
+    
+    // For the hackathon demo, allow any well-formed URL with common TLDs or known domains
+    return isKnownDomain || 
+           /\.(com|org|net|edu|gov|io|co|ai|app|dev)$/i.test(hostname);
+    
   } catch (error) {
     return false;
   }
